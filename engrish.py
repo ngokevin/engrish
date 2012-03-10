@@ -48,23 +48,34 @@ class Engrish(object):
         self.sentences = tokenize.sent_tokenize(self.text)
 
     def highlight_red(self, sentence, word, caps=False):
+        """
+        Highlights in red the occurrences of word in sentence
+        caps flag indicates word or phrase is capitalized
+        """
         word = word if not caps else capitalize(word)
         return replace(sentence, word, colors.FAIL + word + colors.ENDC)
 
-    def search_big_boy_words(self):
+    def highlight_suggest_words(self, category):
         for sentence in self.sentences:
-            for words in word_bank.big_boy_words:
+            for words in category:
 
                 # highlight big boy word if exists in sentence
+                found = False
                 if words[0] in sentence:
-                    print self.highlight_red(sentence, words[0])
-
-                # for capitalized big boy word
+                    found = True
+                    print(self.highlight_red(sentence, words[0]))
                 elif capitalize(words[0]) in sentence:
-                    print self.highlight_red(sentence, words[0], caps=True)
+                    found = True
+                    print(self.highlight_red(sentence, words[0], caps=True))
+
+                # suggest words if possible
+                if len(words) > 1 and found:
+                    print(words[1])
+                    print('')
 
 
 if __name__ == '__main__':
+
     document = sys.argv[1] if len(sys.argv) > 1 else 'test'
     engrish = Engrish(document)
-    engrish.search_big_boy_words()
+    engrish.highlight_suggest_words(word_bank.big_boy_words)
