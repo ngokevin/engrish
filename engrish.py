@@ -1,9 +1,9 @@
 import re
-import string
+from string import capitalize, replace
+import sys
 
 from nltk import tokenize
-
-import words
+import word_bank
 
 class colors:
     """
@@ -35,9 +35,9 @@ class Engrish(object):
         """
         self.colors = colors()
 
-        self.text = open(document).read()
-        self.text = string.lower(self.text)
-        self.text = string.replace(self.text, '\n', ' ')
+        with open(document) as fd:
+            self.text = fd.read()
+        self.text = replace(self.text, '\n', ' ')
 
         self.sentence_tokenizer()
 
@@ -47,12 +47,24 @@ class Engrish(object):
         """
         self.sentences = tokenize.sent_tokenize(self.text)
 
+    def highlight_red(self, sentence, word, caps=False):
+        word = word if not caps else capitalize(word)
+        return replace(sentence, word, colors.FAIL + word + colors.ENDC)
+
     def search_big_boy_words(self):
         for sentence in self.sentences:
-            for big_boy_word in words.big_boy_words:
-                if big_boy_word[0] in sentence:
-                    print string.replace(sentence, big_boy_word[0], colors.FAIL + big_boy_word[0] + colors.ENDC)
+            for words in word_bank.big_boy_words:
+
+                # highlight big boy word if exists in sentence
+                if words[0] in sentence:
+                    print self.highlight_red(sentence, words[0])
+
+                # for capitalized big boy word
+                elif capitalize(words[0]) in sentence:
+                    print self.highlight_red(sentence, words[0], caps=True)
+
 
 if __name__ == '__main__':
-    engrish = Engrish('test')
+    document = sys.argv[1] if len(sys.argv) > 1 else 'test'
+    engrish = Engrish(document)
     engrish.search_big_boy_words()
