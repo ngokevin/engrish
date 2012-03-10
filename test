@@ -1,0 +1,4 @@
+Aggregate a copy of the string with leading characters removed. If chars is
+omitted or None, whitespace characters are removed. If given and not None,
+chars must be a string; the characters in the string will be stripped from the
+beginning of the string this method is called on. Dr. Who.
