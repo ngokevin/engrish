@@ -55,7 +55,7 @@ class Engrish(object):
         word = word if not caps else capitalize(word)
         return replace(sentence, word, colors.FAIL + word + colors.ENDC)
 
-    def highlight_suggest_words(self, category):
+    def highlight_suggest_diction(self, category):
         for sentence in self.sentences:
             for words in category:
 
@@ -78,4 +78,4 @@ if __name__ == '__main__':
 
     document = sys.argv[1] if len(sys.argv) > 1 else 'test'
     engrish = Engrish(document)
-    engrish.highlight_suggest_words(word_bank.big_boy_words)
+    engrish.highlight_suggest_diction(word_bank.big_boy_words)
