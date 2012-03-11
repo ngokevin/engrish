@@ -1,3 +1,4 @@
+# Requires nltk.tokenizers.punkt
 import re
 from string import capitalize, replace
 import sys
@@ -56,26 +57,57 @@ class Engrish(object):
         return replace(sentence, word, colors.FAIL + word + colors.ENDC)
 
     def highlight_suggest_diction(self, category):
+        """
+        Highlights words to avoid and suggests an alternative
+        word if one exists
+        """
         for sentence in self.sentences:
             for words in category:
 
-                # highlight big boy word if exists in sentence
+                # allow word bank to be list of words or
+                # pairs of words (bad, suggested)
+                if type(words) == list:
+                    bad_word = words[0]
+                    suggested_words = words[1]
+                elif type(words) == str:
+                    bad_word = words
+
+                # highlight bad word if exists in sentence
                 found = False
-                if words[0] in sentence:
+                if bad_word in sentence:
                     found = True
-                    print(self.highlight_red(sentence, words[0]))
-                elif capitalize(words[0]) in sentence:
+                    print(self.highlight_red(sentence, bad_word))
+                elif capitalize(bad_word) in sentence:
                     found = True
-                    print(self.highlight_red(sentence, words[0], caps=True))
+                    print(self.highlight_red(sentence, bad_word, caps=True))
+                else:
+                    continue
 
                 # suggest words if possible
-                if len(words) > 1 and found:
-                    print(words[1])
-                    print('')
+                if type(words) == list and found:
+                    if type(suggested_words) == list:
+                        for suggested_word in suggested_words:
+                            print(suggested_word),
+                        print('')
+                    else:
+                        print(suggested_words)
+                print('')
+
+    def run(self):
+        word_banks = [
+            word_bank.big_boy_words,
+            word_bank.dead_phrases,
+            word_bank.buzz_words,
+            word_bank.redundant_phrases,
+            word_bank.business_jargon,
+        ]
+
+        for bank in word_banks:
+            engrish.highlight_suggest_diction(bank)
 
 
 if __name__ == '__main__':
 
     document = sys.argv[1] if len(sys.argv) > 1 else 'test'
     engrish = Engrish(document)
-    engrish.highlight_suggest_diction(word_bank.big_boy_words)
+    engrish.run()
