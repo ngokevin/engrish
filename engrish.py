@@ -56,12 +56,24 @@ class Engrish(object):
         self.text = replace(self.text, '\n', ' ')
 
         self.sentence_tokenizer()
+        self.sentence_lengths()
 
     def sentence_tokenizer(self):
         """
         Splits document into sentences
         """
         self.sentences = tokenize.sent_tokenize(self.text)
+
+    def sentence_lengths(self):
+        """
+        Get lengths of sentences
+        """
+        tokenized = [tokenize.word_tokenize(sentence) for sentence in self.sentences]
+        for sentence in tokenized:
+            for word in sentence:
+                if not re.match('[\w\d]', word[0]):
+                    del(word)
+        self.sentence_lengths = [len(sentence) for sentence in tokenized]
 
     def highlight_red(self, sentence, word, caps=False):
         """
