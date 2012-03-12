@@ -27,6 +27,21 @@ class colors:
         self.FAIL = ''
         self.ENDC = ''
 
+    def purple(self, word):
+        return self.HEADER + word + self.ENDC
+
+    def blue(self, word):
+        return self.OKBLUE + word + self.ENDC
+
+    def green(self, word):
+        return self.OKGREEN + word + self.ENDC
+
+    def yellow(self, word):
+        return self.WARNING + word + self.ENDC
+
+    def red(self, word):
+        return self.FAIL + word + self.ENDC
+
 
 class Engrish(object):
 
@@ -54,15 +69,19 @@ class Engrish(object):
         caps flag indicates word or phrase is capitalized
         """
         word = word if not caps else capitalize(word)
-        return replace(sentence, word, colors.FAIL + word + colors.ENDC)
+        return replace(sentence, word, self.colors.red(word))
 
     def highlight_suggest_diction(self, category):
         """
         Highlights words to avoid and suggests an alternative
         word if one exists
         """
+        suggestions = []
         for sentence in self.sentences:
             for words in category:
+
+                # holds sentence and list of suggested alternatives
+                suggestion = ['', []]
 
                 # allow word bank to be list of words or
                 # pairs of words (bad, suggested)
@@ -76,10 +95,10 @@ class Engrish(object):
                 found = False
                 if bad_word in sentence:
                     found = True
-                    print(self.highlight_red(sentence, bad_word))
+                    suggestion[0] = self.highlight_red(sentence, bad_word)
                 elif capitalize(bad_word) in sentence:
                     found = True
-                    print(self.highlight_red(sentence, bad_word, caps=True))
+                    suggestion[0] = self.highlight_red(sentence, bad_word, caps=True)
                 else:
                     continue
 
@@ -87,23 +106,30 @@ class Engrish(object):
                 if type(words) == list and found:
                     if type(suggested_words) == list:
                         for suggested_word in suggested_words:
-                            print(suggested_word),
-                        print('')
+                            suggestion[1].append(suggested_word)
                     else:
-                        print(suggested_words)
-                print('')
+                        suggestion[1].append(suggested_words)
+
+
+                suggestions.append(suggestion)
+        return suggestions
 
     def run(self):
         word_banks = [
-            word_bank.big_boy_words,
-            word_bank.dead_phrases,
-            word_bank.buzz_words,
-            word_bank.redundant_phrases,
-            word_bank.business_jargon,
+            ("BIG BOY WORDS", word_bank.big_boy_words),
+            ("DEAD PHRASES", word_bank.dead_phrases),
+            ("BUZZ WORDS", word_bank.buzz_words),
+            ("REDUNDANT PHRASES", word_bank.redundant_phrases),
+            ("BUSINESS JARGON", word_bank.business_jargon),
         ]
 
+        print(self.colors.purple("RUNNING DICTION CHECK"))
         for bank in word_banks:
-            engrish.highlight_suggest_diction(bank)
+            suggestions = engrish.highlight_suggest_diction(bank[1])
+            for suggestion in suggestions:
+                print(suggestion[0])
+                print(self.colors.green("Suggestions: ") + str(suggestion[1]))
+                print('')
 
 
 if __name__ == '__main__':
