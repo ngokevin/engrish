@@ -133,7 +133,7 @@ class Engrish(object):
         suggestions = []
 
         for length in enumerate(self.sentence_lengths):
-            if length[1] > 20:
+            if length[1] > 25:
                 sentence_length = {
                     'sentence': self.sentences[length[0]],
                     'length': length[1]
