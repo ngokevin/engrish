@@ -142,6 +142,37 @@ class Engrish(object):
 
         return suggestions
 
+    def suggest_vary_sentence_length(self):
+        """
+        Check for three long (over 15) sentences in a row
+        """
+        sentences = self.sentences
+        lengths = self.sentence_lengths
+        suggestions = []
+
+        length_iter = lengths.__iter__()
+        for length in enumerate(length_iter):
+            if length[1] <= 18:
+                continue
+
+            i = length[0]
+            next_length = lengths[i + 1]
+            next_next_length = lengths[i + 2]
+
+            if next_length >= 15 and next_next_length >= 15:
+                three_long_sent = (sentences[i], sentences[i + 1], sentences[i + 2])
+                three_long_lens = (length[1], next_length, next_next_length)
+                suggestions.append({
+                    'sentences': three_long_sent,
+                    'lengths': three_long_lens
+                })
+
+            else:
+                length_iter.next()
+                length_iter.next()
+
+        return suggestions
+
     def run(self):
         word_banks = [
             ("BIG BOY WORDS", word_bank.big_boy_words),
@@ -167,6 +198,14 @@ class Engrish(object):
             print(suggestion['sentence'])
             print(self.colors.red("Length: " + str(suggestion['length'])))
             print('')
+
+        # sentence length variation
+        print(self.colors.purple("RUNNING SENTENCE LENGTH VARIATION CHECK"))
+        suggestions = self.suggest_vary_sentence_length()
+        for suggestion in suggestions:
+            print(suggestion['sentences'])
+            print(self.colors.red("Lengths " + str(suggestion['lengths'])))
+            print ('')
 
 
 if __name__ == '__main__':
