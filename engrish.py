@@ -126,6 +126,22 @@ class Engrish(object):
                 suggestions.append(suggestion)
         return suggestions
 
+    def suggest_shorten_sentences(self):
+        """
+        Return long sentences
+        """
+        suggestions = []
+
+        for length in enumerate(self.sentence_lengths):
+            if length[1] > 20:
+                sentence_length = {
+                    'sentence': self.sentences[length[0]],
+                    'length': length[1]
+                }
+                suggestions.append(sentence_length)
+
+        return suggestions
+
     def run(self):
         word_banks = [
             ("BIG BOY WORDS", word_bank.big_boy_words),
@@ -135,6 +151,7 @@ class Engrish(object):
             ("BUSINESS JARGON", word_bank.business_jargon),
         ]
 
+        # diction
         print(self.colors.purple("RUNNING DICTION CHECK"))
         for bank in word_banks:
             suggestions = engrish.highlight_suggest_diction(bank[1])
@@ -142,6 +159,14 @@ class Engrish(object):
                 print(suggestion[0])
                 print(self.colors.green("Suggestions: ") + str(suggestion[1]))
                 print('')
+
+        # sentence lengths
+        print(self.colors.purple("RUNNING SENTENCE LENGTH CHECK"))
+        suggestions = self.suggest_shorten_sentences()
+        for suggestion in suggestions:
+            print(suggestion['sentence'])
+            print(self.colors.red("Length: " + str(suggestion['length'])))
+            print('')
 
 
 if __name__ == '__main__':
