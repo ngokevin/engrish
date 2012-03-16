@@ -66,13 +66,13 @@ class Engrish(object):
 
     def sentence_lengths(self):
         """
-        Get lengths of sentences
+        Get lengths of sentences (exclude non-word tokens)
         """
         tokenized = [tokenize.word_tokenize(sentence) for sentence in self.sentences]
         for sentence in tokenized:
-            for word in sentence:
-                if not re.match('[\w\d]', word[0]):
-                    del(word)
+            for word in enumerate(sentence):
+                if not re.match('[\w\d]', word[1][0]):
+                    sentence.pop(word[0])
         self.sentence_lengths = [len(sentence) for sentence in tokenized]
 
     def highlight_red(self, sentence, word, caps=False):
