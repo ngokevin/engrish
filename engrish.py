@@ -152,16 +152,17 @@ class Engrish(object):
 
         length_iter = lengths.__iter__()
         for length in enumerate(length_iter):
-            if length[1] <= 18:
+            if length[1] < 20:
                 continue
 
             i = length[0]
+            curr_length = lengths[i]
             next_length = lengths[i + 1]
             next_next_length = lengths[i + 2]
 
-            if next_length >= 15 and next_next_length >= 15:
+            if curr_length >= 20 and next_length >= 20 and next_next_length >= 20:
                 three_long_sent = (sentences[i], sentences[i + 1], sentences[i + 2])
-                three_long_lens = (length[1], next_length, next_next_length)
+                three_long_lens = (curr_length, next_length, next_next_length)
                 suggestions.append({
                     'sentences': three_long_sent,
                     'lengths': three_long_lens

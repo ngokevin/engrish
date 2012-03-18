@@ -1,4 +1,4 @@
-Accordingly, I tried to accumulate as much wealth as humanly possible. It is
+a = """Accordingly, I tried to accumulate as much wealth as humanly possible. It is
 true. I tried to acquire as much assistance to communicate my words. Though I
 did not pay enough compensation. I was too broke. Consequently, I did not get
 much help. People demonstrated to me that I had to discontinue my endeavors.
@@ -11,4 +11,4 @@ necessary, I terminated them. I am trasmitting this document before I die.
 Utilize it well.
 
 Please be advised that this document is a test. Without further delay, the
-end.
+end."""
